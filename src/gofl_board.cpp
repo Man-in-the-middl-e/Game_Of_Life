@@ -7,10 +7,11 @@
 
 #ifdef __unix__
 #include <unistd.h>
-void GoflBoard::RefreshScreen(const char* buffer, size_t buffer_size){
-    write(STDOUT_FILENO, "\x1b[2J", 4); //clear screen
-    write(STDOUT_FILENO,"\x1b[1;1H",7); //set cursor to the top left corner
-    write(STDOUT_FILENO,buffer,buffer_size);
+void GoflBoard::RefreshScreen(const char *buffer, size_t buffer_size)
+{
+    write(STDOUT_FILENO, "\x1b[2J", 4);   //clear screen
+    write(STDOUT_FILENO, "\x1b[1;1H", 7); //set cursor to the top left corner
+    write(STDOUT_FILENO, buffer, buffer_size);
 }
 #endif
 
@@ -30,9 +31,13 @@ GoflBoard::GoflBoard(uint32_t n_rows, uint32_t n_cols, char default_val) : GoflB
 GoflBoard::GoflBoard(std::initializer_list<std::initializer_list<char>> ls) : GoflBoard(ls.size(), ls.begin()->size())
 {
     uint32_t i = 0;
-    for (const auto &rows : ls)
+    for (const auto &row : ls)
     {
-        for (const auto col : rows)
+        if (row.size() != cols_)
+        {
+            throw std::out_of_range("Number of colums must be the same  on each row");
+        }
+        for (const auto col : row)
         {
             data[i++] = col;
         }
@@ -68,7 +73,7 @@ GoflBoard::GoflBoard(const std::string file_name)
             }
         }
     }
-    else 
+    else
     {
         std::cout << "Could not open file " << file_name << std::endl;
     }
@@ -111,10 +116,10 @@ void GoflBoard::Run()
         std::stringstream stream;
         this->Print(stream);
         this->NextBoardState();
-        RefreshScreen(stream.str().c_str(),stream.str().size());
-        #ifdef __unix__
+        RefreshScreen(stream.str().c_str(), stream.str().size());
+#ifdef __unix__
         usleep(kScreenRefreshRate);
-        #endif
+#endif
     }
 }
 

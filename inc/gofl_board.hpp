@@ -7,7 +7,7 @@
 
 enum CELL_STATE : char{
     LIVE = '#',
-    DEAD = '.'
+    DEAD = ' '
 };
 
 /*
@@ -24,7 +24,6 @@ public:
     GoflBoard(uint32_t n_rows, uint32_t n_cols, T default_val) = delete;
     GoflBoard(std::initializer_list<std::initializer_list<char>> ls);
     GoflBoard(const std::string file_name);
-
    
 
     uint32_t Rows() const;
@@ -38,14 +37,17 @@ public:
      
     void Run();
     void Print(std::ostream& stream = std::cout) const;
-
+    //don't forget to initialize size_ and capacity_ inside ctors
     bool Empty() const;
 
 private:
     uint32_t rows_;
     uint32_t cols_;
+    uint32_t size_;
+    uint32_t capacity_;
     std::unique_ptr<char[]> data;
-    static const  uint32_t kScreenRefreshRate = 500000; //mcrs
+
+    static const  uint32_t kScreenRefreshRate = 100000; //mcrs
     
     void NextBoardState();
     void SaveToFile() const;
